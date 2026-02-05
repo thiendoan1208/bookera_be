@@ -22,6 +22,7 @@ fs
     return (
       file.indexOf('.') !== 0 &&
       file !== basename &&
+      file !== 'associate.js' &&
       file.slice(-3) === '.js' &&
       file.indexOf('.test.js') === -1
     );
@@ -36,6 +37,10 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+// Apply central associations from associate.js (avoids requiring models before init)
+const applyAssociations = require(path.join(__dirname, 'associate.js'));
+applyAssociations(db);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
