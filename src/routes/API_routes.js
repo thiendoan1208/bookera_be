@@ -11,7 +11,18 @@ const {
   sendRecoverCodeController,
   verifyRecoverCodeController,
   resetPasswordController,
+  updateBillingInfoController,
 } = require("../controller/auth_controller");
+const {
+  createListingController,
+  getListingsController,
+  getListingByIdController,
+  createCheckoutSessionController,
+  verifyCheckoutSessionController,
+  getMyListingsController,
+  getMyOrdersController,
+  deleteListingController,
+} = require("../controller/marketplace_controller");
 const { verifyAuth } = require("../middleware/auth_middleware");
 const { upload } = require("../middleware/multer");
 
@@ -40,7 +51,31 @@ apiRoutes.put(
 );
 apiRoutes.put("/auth/name", verifyAuth, updateNameController);
 apiRoutes.put("/auth/password", verifyAuth, updatePasswordController);
+apiRoutes.put("/auth/billing", verifyAuth, updateBillingInfoController);
 apiRoutes.delete("/auth/account", verifyAuth, deleteAccountController);
+
+// Marketplace Routes
+apiRoutes.get("/marketplace/listings", getListingsController);
+apiRoutes.get("/marketplace/listings/:id", getListingByIdController);
+apiRoutes.post(
+  "/marketplace/listings",
+  verifyAuth,
+  upload.array("images", 10),
+  createListingController,
+);
+apiRoutes.post(
+  "/marketplace/checkout",
+  verifyAuth,
+  createCheckoutSessionController,
+);
+apiRoutes.get("/marketplace/verify-session", verifyCheckoutSessionController);
+apiRoutes.get("/marketplace/my-listings", verifyAuth, getMyListingsController);
+apiRoutes.get("/marketplace/my-orders", verifyAuth, getMyOrdersController);
+apiRoutes.delete(
+  "/marketplace/listings/:id",
+  verifyAuth,
+  deleteListingController,
+);
 
 module.exports = {
   apiRoutes,

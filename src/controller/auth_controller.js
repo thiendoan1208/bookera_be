@@ -11,6 +11,7 @@ const {
   sendRecoverCodeService,
   verifyRecoverCodeService,
   resetPasswordService,
+  updateBillingInfoService,
 } = require("../services/auth_service");
 
 const dotenv = require("dotenv");
@@ -70,6 +71,9 @@ const signInController = async (req, res) => {
           email: user.email,
           avatar_url: user.avatar_url,
           role_id: user.role_id,
+          phone_number: user.phone_number,
+          phone_verified: user.phone_verified,
+          billing_address: user.billing_address,
         },
       });
     }
@@ -93,6 +97,9 @@ const signInController = async (req, res) => {
         email: user.email,
         avatar_url: user.avatar_url,
         role_id: user.role_id,
+        phone_number: user.phone_number,
+        phone_verified: user.phone_verified,
+        billing_address: user.billing_address,
       },
     });
   } catch (error) {
@@ -141,6 +148,9 @@ const getCurrentUserController = async (req, res) => {
         email: req.user.email,
         avatar_url: req.user.avatar_url,
         role_id: req.user.role_id,
+        phone_number: req.user.phone_number,
+        phone_verified: req.user.phone_verified,
+        billing_address: req.user.billing_address,
       },
     });
   } catch (error) {
@@ -382,6 +392,31 @@ const resetPasswordController = async (req, res) => {
   }
 };
 
+const updateBillingInfoController = async (req, res) => {
+  try {
+    const { phone_number, phone_verified, billing_address } = req.body;
+    const userId = req.user.id;
+
+    const result = await updateBillingInfoService(
+      userId,
+      phone_number,
+      phone_verified,
+      billing_address,
+    );
+
+    res.status(200).json({
+      message: "Billing information updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error("Update billing info error:", error);
+    res.status(500).json({
+      message: "Failed to update billing information",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   signUpController,
   signInController,
@@ -394,4 +429,5 @@ module.exports = {
   sendRecoverCodeController,
   verifyRecoverCodeController,
   resetPasswordController,
+  updateBillingInfoController,
 };

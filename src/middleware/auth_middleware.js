@@ -38,7 +38,16 @@ const verifyAuth = async (req, res, next) => {
         {
           model: User,
           as: "users",
-          attributes: ["id", "username", "email", "avatar_url", "role_id"],
+          attributes: [
+            "id",
+            "username",
+            "email",
+            "avatar_url",
+            "role_id",
+            "phone_number",
+            "phone_verified",
+            "billing_address",
+          ],
         },
       ],
     });
@@ -103,7 +112,16 @@ const optionalAuth = async (req, res, next) => {
         {
           model: User,
           as: "users",
-          attributes: ["id", "username", "email", "avatar_url", "role_id"],
+          attributes: [
+            "id",
+            "username",
+            "email",
+            "avatar_url",
+            "role_id",
+            "phone_number",
+            "phone_verified",
+            "billing_address",
+          ],
         },
       ],
     });

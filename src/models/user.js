@@ -22,6 +22,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "user_recover",
       });
+
+      User.hasMany(models.UserBook, {
+        foreignKey: "user_id",
+        as: "user_books",
+      });
+
+      User.hasMany(models.Order, {
+        foreignKey: "buyer_id",
+        as: "purchases",
+      });
+
+      User.hasMany(models.Order, {
+        foreignKey: "seller_id",
+        as: "sales",
+      });
     }
   }
 
@@ -61,6 +76,24 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
         defaultValue: null,
+      },
+
+      billing_address: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        defaultValue: null,
+      },
+
+      phone_number: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        defaultValue: null,
+      },
+
+      phone_verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
       },
 
       role_id: { type: DataTypes.INTEGER, allowNull: false },

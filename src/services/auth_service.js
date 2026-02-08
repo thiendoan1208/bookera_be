@@ -402,6 +402,47 @@ const resetPasswordService = async (email, code, newPassword) => {
   return true;
 };
 
+const updateBillingInfoService = async (
+  userId,
+  phoneNumber,
+  phoneVerified,
+  billingAddress,
+) => {
+  // Find user
+  const user = await User.findByPk(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Prepare update data
+  const updateData = {};
+
+  if (phoneNumber !== undefined) {
+    updateData.phone_number = phoneNumber;
+  }
+
+  if (phoneVerified !== undefined) {
+    updateData.phone_verified = phoneVerified;
+  }
+
+  if (billingAddress !== undefined) {
+    updateData.billing_address = billingAddress;
+  }
+
+  // Update user
+  await User.update(updateData, { where: { id: userId } });
+
+  // Get updated user
+  const updatedUser = await User.findByPk(userId);
+
+  return {
+    phone_number: updatedUser.phone_number,
+    phone_verified: updatedUser.phone_verified,
+    billing_address: updatedUser.billing_address,
+  };
+};
+
 module.exports = {
   signUpService,
   signInService,
@@ -415,4 +456,5 @@ module.exports = {
   sendRecoverCodeService,
   verifyRecoverCodeService,
   resetPasswordService,
+  updateBillingInfoService,
 };
