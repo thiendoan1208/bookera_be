@@ -37,6 +37,26 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "seller_id",
         as: "sales",
       });
+
+      User.hasMany(models.Conversation, {
+        foreignKey: "buyer_id",
+        as: "conversations_as_buyer",
+      });
+
+      User.hasMany(models.Conversation, {
+        foreignKey: "seller_id",
+        as: "conversations_as_seller",
+      });
+
+      User.hasMany(models.Notification, {
+        foreignKey: "user_id",
+        as: "notifications",
+      });
+
+      User.hasMany(models.Message, {
+        foreignKey: "sender_id",
+        as: "messages",
+      });
     }
   }
 

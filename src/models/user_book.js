@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "listing_id",
         as: "orders",
       });
+
+      UserBook.hasMany(models.Conversation, {
+        foreignKey: "listing_id",
+        as: "conversations",
+      });
     }
   }
 

@@ -25,6 +25,8 @@ const {
 } = require("../controller/marketplace_controller");
 const { verifyAuth } = require("../middleware/auth_middleware");
 const { upload } = require("../middleware/multer");
+const { messageRoutes } = require("./message_routes");
+const { notificationRoutes } = require("./notification_routes");
 
 const apiRoutes = express.Router();
 
@@ -76,6 +78,12 @@ apiRoutes.delete(
   verifyAuth,
   deleteListingController,
 );
+
+// Message Routes
+apiRoutes.use("/messages", messageRoutes);
+
+// Notification Routes
+apiRoutes.use("/notifications", notificationRoutes);
 
 module.exports = {
   apiRoutes,
