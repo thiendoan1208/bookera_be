@@ -1,4 +1,4 @@
-const chatService = require("../services/chat.service");
+const chatService = require("../services/chat_service");
 const jwt = require("jsonwebtoken");
 
 module.exports = (io) => {

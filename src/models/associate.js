@@ -46,6 +46,14 @@ module.exports = (db) => {
   Message.belongsTo(Conversation, {
     foreignKey: 'conversation_id',
   });
+  //FOR AUCTION
+  Auction.associate = (models) => {
+  Auction.belongsTo(models.User, {
+    foreignKey: "seller_id",
+    as: "seller",
+  });
+};
+
 
   /* User - Message */
   User.hasMany(Message, { foreignKey: 'sender_id' });
