@@ -1,13 +1,17 @@
 const express = require("express");
+const http = require("http");
 const { config } = require("dotenv");
 const { apiRoutes } = require("./routes/API_routes");
 const { configCORS } = require("./config/cors");
 const cookieParser = require("cookie-parser");
 const { connectSequelize } = require("./config/sequelize_db_orm");
+const { initAuctionSocket } = require("./socket/auction.socket");
+
 config();
 
-
 const app = express();
+const server = http.createServer(app);
+
 const port = process.env.BOOKERA_BE_PORT || 8080;
 const hostname = process.env.BOOKERA_BE_HOSTNAME;
 
@@ -26,6 +30,9 @@ connectSequelize();
 // Routes
 app.use("/api", apiRoutes);
 
-app.listen(port, () => {
+// Socket.IO for auctions
+initAuctionSocket(server);
+
+server.listen(port, () => {
   console.log(`Example app listening on http://${hostname}:${port}`);
 });
