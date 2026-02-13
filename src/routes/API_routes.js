@@ -27,6 +27,7 @@ const { verifyAuth } = require("../middleware/auth_middleware");
 const { upload } = require("../middleware/multer");
 const { messageRoutes } = require("./message_routes");
 const { notificationRoutes } = require("./notification_routes");
+const aiRoutes = require("./ai_routes");
 
 const apiRoutes = express.Router();
 
@@ -84,6 +85,9 @@ apiRoutes.use("/messages", messageRoutes);
 
 // Notification Routes
 apiRoutes.use("/notifications", notificationRoutes);
+
+// AI Assistant Routes
+apiRoutes.use("/ai", aiRoutes);
 
 module.exports = {
   apiRoutes,
