@@ -39,7 +39,11 @@ exports.createAcution = async (req, res) => {
     const startTime = new Date();
     const endTime = new Date(startTime.getTime() + durationMinutes * 60000);
 
-    const sellerId = req.userId || req.user?.id;
+    //////////////////////////////////////////////////////////////////////
+    ////// sửa 2 dòng code này nếu muốn chạy test bằng postman 
+    // const rawSellerId = req.userId || req.user?.id;//uncommnet
+    //     const sellerId = rawSellerId || 1;//uncommnet
+    const sellerId = req.userId || req.user?.id; //commnet lại 
 
     const auction = await auctionService.createAuctionService({
       sellerId,
