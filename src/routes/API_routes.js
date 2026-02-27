@@ -27,6 +27,7 @@ const { verifyAuth } = require("../middleware/auth_middleware");
 const { upload } = require("../middleware/multer");
 const { messageRoutes } = require("./message_routes");
 const { notificationRoutes } = require("./notification_routes");
+const { savedItemRoutes } = require("./saved_item_routes");
 const aiRoutes = require("./ai_routes");
 
 const apiRoutes = express.Router();
@@ -85,6 +86,9 @@ apiRoutes.use("/messages", messageRoutes);
 
 // Notification Routes
 apiRoutes.use("/notifications", notificationRoutes);
+
+// Saved Item Routes
+apiRoutes.use("/saved-items", savedItemRoutes);
 
 // AI Assistant Routes
 apiRoutes.use("/ai", aiRoutes);

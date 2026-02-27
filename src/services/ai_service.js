@@ -5,7 +5,6 @@ const { Op } = require("sequelize");
 const AIConversation = db.AIConversation;
 const AIMessage = db.AIMessage;
 
-// System prompt cho AI chỉ tư vấn về sách
 const SYSTEM_PROMPT = `You are Kera, a friendly and knowledgeable book assistant for Bookera platform. Your purpose is to help users find the perfect books based on their mood, feelings, or specific descriptions.
 
 IMPORTANT RULES:
