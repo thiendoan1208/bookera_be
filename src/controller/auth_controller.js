@@ -394,7 +394,8 @@ const resetPasswordController = async (req, res) => {
 
 const updateBillingInfoController = async (req, res) => {
   try {
-    const { phone_number, phone_verified, billing_address } = req.body;
+    const { phone_number, phone_verified, billing_address, firebase_id_token } =
+      req.body;
     const userId = req.user.id;
 
     const result = await updateBillingInfoService(
@@ -402,6 +403,7 @@ const updateBillingInfoController = async (req, res) => {
       phone_number,
       phone_verified,
       billing_address,
+      firebase_id_token,
     );
 
     res.status(200).json({
@@ -410,6 +412,15 @@ const updateBillingInfoController = async (req, res) => {
     });
   } catch (error) {
     console.error("Update billing info error:", error);
+    if (
+      error.message.includes("required") ||
+      error.message.includes("verify phone") ||
+      error.message.includes("does not match")
+    ) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
     res.status(500).json({
       message: "Failed to update billing information",
       error: error.message,

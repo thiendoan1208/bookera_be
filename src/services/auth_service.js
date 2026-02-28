@@ -5,6 +5,7 @@ const { client } = require("../config/oauth");
 const { cloudinary } = require("../config/cloudinary");
 const { resend } = require("../config/resend");
 const { generateRecoverCode } = require("../util/generateCode");
+const axios = require("axios");
 
 const signUpService = async (userData) => {
   const { username, email, password } = userData;
@@ -407,6 +408,7 @@ const updateBillingInfoService = async (
   phoneNumber,
   phoneVerified,
   billingAddress,
+  firebaseIdToken,
 ) => {
   // Find user
   const user = await User.findByPk(userId);
@@ -418,12 +420,71 @@ const updateBillingInfoService = async (
   // Prepare update data
   const updateData = {};
 
-  if (phoneNumber !== undefined) {
-    updateData.phone_number = phoneNumber;
+  const normalizePhone = (value) =>
+    typeof value === "string" ? value.trim() : value;
+
+  const requestedPhoneNumber = normalizePhone(phoneNumber);
+
+  const verifyFirebasePhoneToken = async (idToken) => {
+    const firebaseApiKey =
+      process.env.FIREBASE_WEB_API_KEY ||
+      process.env.FIREBASE_API_KEY ||
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+    if (!firebaseApiKey) {
+      throw new Error(
+        "Firebase API key is not configured on backend environment",
+      );
+    }
+
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`;
+    const response = await axios.post(url, { idToken });
+    const firebaseUser = response.data?.users?.[0];
+    const verifiedPhoneNumber = normalizePhone(firebaseUser?.phoneNumber);
+
+    if (!verifiedPhoneNumber) {
+      throw new Error("Firebase token is valid but has no verified phone number");
+    }
+
+    return verifiedPhoneNumber;
+  };
+
+  if (phoneVerified === true) {
+    if (!requestedPhoneNumber) {
+      throw new Error(
+        "phone_number is required when setting phone_verified to true",
+      );
+    }
+
+    if (!firebaseIdToken || typeof firebaseIdToken !== "string") {
+      throw new Error(
+        "firebase_id_token is required when setting phone_verified to true",
+      );
+    }
+
+    let verifiedPhoneNumber;
+    try {
+      verifiedPhoneNumber = await verifyFirebasePhoneToken(firebaseIdToken);
+    } catch (error) {
+      throw new Error("Failed to verify phone with Firebase token");
+    }
+
+    if (verifiedPhoneNumber !== requestedPhoneNumber) {
+      throw new Error(
+        "Verified Firebase phone number does not match provided phone_number",
+      );
+    }
+
+    updateData.phone_number = verifiedPhoneNumber;
+    updateData.phone_verified = true;
+  } else if (requestedPhoneNumber !== undefined) {
+    updateData.phone_number = requestedPhoneNumber;
   }
 
   if (phoneVerified !== undefined) {
-    updateData.phone_verified = phoneVerified;
+    if (phoneVerified !== true) {
+      updateData.phone_verified = phoneVerified;
+    }
   }
 
   if (billingAddress !== undefined) {
